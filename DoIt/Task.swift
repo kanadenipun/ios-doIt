@@ -5,9 +5,8 @@
 
 import Foundation
 
-class Tasks {
+class Task {
 
      var name = ""
      var important = false
-
 }

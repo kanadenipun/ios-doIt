@@ -8,13 +8,14 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     
     @IBOutlet var tableView: UITableView!
 
-    var tasks : [Tasks] = []
-
+    var tasks : [Task] = []
+    var selectedTaskIndex = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,17 +43,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return tasks.count
     }
 
-
-    func makeTasks() -> [Tasks]{
-        let task1 = Tasks()
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task = tasks[indexPath.row]
+        selectedTaskIndex = indexPath.row
+        performSegue(withIdentifier: "viewTaskSegue", sender: task)
+    }
+    
+    func makeTasks() -> [Task]{
+        let task1 = Task()
         task1.name = "Walk the dog"
         task1.important = false
 
-        let task2 = Tasks()
+        let task2 = Task()
         task2.name = "Buy Cheese"
         task2.important = true
 
-        let task3 = Tasks()
+        let task3 = Task()
         task3.name = "Mow the new Lawn"
         task3.important = false
 
@@ -61,8 +67,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     @IBAction func addButtonTapped(_ sender: Any) {
-        
         performSegue(withIdentifier: "addSegue", sender:nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "addSegue" {
+            let nextVC = segue.destination as! CreateTaskViewController
+            nextVC.previousVC = self
+        }
+        if segue.identifier == "viewTaskSegue" {
+            let nextVC = segue.destination as! ViewTaskViewController
+            nextVC.task = sender as! Task
+            nextVC.previousVC = self
+        }
+        
     }
 
 }
